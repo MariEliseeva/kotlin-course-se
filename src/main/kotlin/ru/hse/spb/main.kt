@@ -1,4 +1,4 @@
-//package ru.hse.spb
+package ru.hse.spb
 
 fun isInLanguage(sentence: String?): String {
     val wordsArray = sentence?.split(" ") ?: return "NO"
