@@ -1,42 +1,45 @@
 package ru.hse.spb
 
-fun isInLanguage(sentence: String?): String {
-    val wordsArray = sentence?.split(" ") ?: return "NO"
-    if (wordsArray.size == 1) {
-        return isWord(wordsArray[0])
+fun isInLanguage(sentence: String?): Boolean {
+    val words = sentence?.split(" ") ?: return false
+    if (words.size == 1) {
+        return isWord(words[0])
     }
-    val isFeminine = isFeminine(wordsArray[0])
+    val isFeminine = isFeminine(words[0])
     var index = 0
-    while (index < wordsArray.size && isAdjective(wordsArray[index])) {
-        if (isFeminine(wordsArray[index]) != isFeminine) {
-            return "NO"
-        }
-        index++
-    }
-    if (index == wordsArray.size
-        || isFeminine(wordsArray[index]) != isFeminine
-        || !isNoun(wordsArray[index])
+    index = indexOfNextPartOfSpeech(index, words, isFeminine, ::isAdjective)
+    if (index == -1
+        || index == words.size
+        || isFeminine(words[index]) != isFeminine
+        || !isNoun(words[index])
     ) {
-        return "NO"
+        return false
     }
     index++
-    while (index < wordsArray.size && isVerb(wordsArray[index])) {
-        if (isFeminine(wordsArray[index]) != isFeminine) {
-            return "NO"
+    index = indexOfNextPartOfSpeech(index, words, isFeminine, ::isVerb)
+    if (index != words.size) {
+        return false
+    }
+    return true
+}
+
+private fun indexOfNextPartOfSpeech(
+    start: Int, words: List<String>,
+    isFeminine: Boolean,
+    isPartOfSpeech: (String) -> Boolean
+): Int {
+    var index = start
+    while (index < words.size && isPartOfSpeech(words[index])) {
+        if (isFeminine(words[index]) != isFeminine) {
+            return -1
         }
         index++
     }
-    if (index != wordsArray.size) {
-        return "NO"
-    }
-    return "YES"
+    return index
 }
 
-private fun isWord(word: String): String {
-    if (isAdjective(word) || isVerb(word) || isNoun(word)) {
-        return "YES"
-    }
-    return "NO"
+private fun isWord(word: String): Boolean {
+    return isAdjective(word) || isVerb(word) || isNoun(word);
 }
 
 private fun isAdjective(word: String): Boolean {
@@ -58,5 +61,9 @@ private fun isFeminine(word: String): Boolean {
 }
 
 fun main(args: Array<String>) {
-    println(isInLanguage(readLine()))
+    if (isInLanguage(readLine())) {
+        println("YES")
+    } else {
+        println("NO")
+    }
 }

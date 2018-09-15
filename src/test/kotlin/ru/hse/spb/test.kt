@@ -1,46 +1,46 @@
 package ru.hse.spb
 
-import org.junit.Assert.assertEquals
+import org.junit.Assert.*
 import org.junit.Test
 
 class TestSource {
     @Test
     fun testIsInLanguageOneWord() {
-        assertEquals("YES", isInLanguage("etr"))
-        assertEquals("YES", isInLanguage("feinites"))
-        assertEquals("YES", isInLanguage("taliala"))
-        assertEquals("NO", isInLanguage("wrongword"))
+        assertTrue(isInLanguage("etr"))
+        assertTrue(isInLanguage("feinites"))
+        assertTrue(isInLanguage("taliala"))
+        assertFalse(isInLanguage("wrongword"))
     }
 
     @Test
     fun testIsInLanguageNoNoun() {
-        assertEquals("NO", isInLanguage("etis atis animatis etis atis amatis"))
-        assertEquals("NO", isInLanguage("nataliala kataliala"))
-        assertEquals("NO", isInLanguage("feinites inites"))
+        assertFalse(isInLanguage("etis atis animatis etis atis amatis"))
+        assertFalse(isInLanguage("nataliala kataliala"))
+        assertFalse(isInLanguage("feinites inites"))
     }
 
     @Test
     fun testIsInLanguageBadWord() {
-        assertEquals("NO", isInLanguage("nataliala kataliala vetra feinite"))
-        assertEquals("NO", isInLanguage("nataliala katalial vetra"))
+        assertFalse(isInLanguage("nataliala kataliala vetra feinite"))
+        assertFalse(isInLanguage("nataliala katalial vetra"))
     }
 
     @Test
     fun testIsInLanguageBadGender() {
-        assertEquals("NO", isInLanguage("natalios kataliala vetra"))
-        assertEquals("NO", isInLanguage("nataliala vetr"))
+        assertFalse(isInLanguage("natalios kataliala vetra"))
+        assertFalse(isInLanguage("nataliala vetr"))
     }
 
     @Test
     fun testIsInLanguageManySentences() {
-        assertEquals("NO", isInLanguage("nataliala vetra feinites vetra"))
-        assertEquals("NO", isInLanguage("nataliala kataliala vetra feinites inites tes"))
+        assertFalse(isInLanguage("nataliala vetra feinites vetra"))
+        assertFalse(isInLanguage("nataliala kataliala vetra feinites inites tes"))
     }
 
     @Test
     fun testIsInLanguageOneCorrectSentence() {
-        assertEquals("YES", isInLanguage("nataliala kataliala vetra feinites"))
-        assertEquals("YES", isInLanguage("petr feinitis"))
-        assertEquals("YES", isInLanguage("nataliala kataliala vetra"))
+        assertTrue(isInLanguage("nataliala kataliala vetra feinites"))
+        assertTrue(isInLanguage("petr feinitis"))
+        assertTrue(isInLanguage("nataliala kataliala vetra"))
     }
 }
