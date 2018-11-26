@@ -4,8 +4,8 @@ import org.antlr.v4.runtime.BufferedTokenStream
 import org.antlr.v4.runtime.CharStreams
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import ru.hse.spb.parser.ExpLexer
-import ru.hse.spb.parser.ExpParser
+import ru.spb.hse.parser.ExpLexer
+import ru.spb.hse.parser.ExpParser
 
 class ParsingTest {
 
