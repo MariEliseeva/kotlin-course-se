@@ -10,8 +10,6 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
 }
-compileJava.dependsOn generateGrammarSource
-compileKotlin.dependsOn generateGrammarSource
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"

@@ -28,33 +28,31 @@ abstract class Command(val name: String, private val options : List<String> =  l
     }
 
     override fun toString(): String {
-        val builder = StringBuilder()
-        render(builder)
-        return builder.toString()
+        return buildString { render(this@buildString) }
     }
 
     fun toOutputStream(outputStream: OutputStream){
-        val builder = StringBuilder()
-        render(builder)
-        outputStream.write(builder.toString().toByteArray())
+        outputStream.write(toString().toByteArray())
     }
 
     fun renderOptions() : String {
-        if (options.isEmpty()) {
-            return ""
+        return if (options.isEmpty()) {
+            ""
+        } else {
+            options.joinToString(separator = ",", prefix = "[", postfix = "]")
         }
-        return options.joinToString(",", "[", "]")
     }
 
     fun renderArguments() : String {
-        if (arguments.isEmpty()) {
-            return ""
+        return if (arguments.isEmpty()) {
+            ""
+        } else {
+            arguments.joinToString(separator = "}{", prefix = "{", postfix = "}")
         }
-        return arguments.joinToString("}{", "{", "}")
     }
 
     operator fun String.unaryPlus() {
-        children.add(TextElement(this))
+        children += TextElement(this)
     }
 
     fun flushLeft(init: FlushLeft.() -> Unit) {
@@ -144,14 +142,14 @@ class Item: LineCommand("item") {
 class CustomTag(name: String, options: List<String>): BeginEndCommand(name, options)
 
 class Document: BeginEndCommand("document") {
-    private var documentClass : DocumentClass? = null
-    private var usePackages : MutableList<UsePackage> = mutableListOf()
+    private lateinit var _documentClass : DocumentClass
+    private val usePackages : MutableList<UsePackage> = mutableListOf()
 
     override fun render(builder: StringBuilder) {
-        if (documentClass == null) {
+        if (!::_documentClass.isInitialized) {
             throw TexBuilderException()
         }
-        documentClass!!.render(builder)
+        _documentClass.render(builder)
         for (usePackage in usePackages) {
             usePackage.render(builder)
         }
@@ -159,10 +157,10 @@ class Document: BeginEndCommand("document") {
     }
 
     fun documentClass(name: String, vararg  options: String) {
-        if (documentClass != null) {
+        if (::_documentClass.isInitialized) {
             throw TexBuilderException()
         }
-        documentClass = DocumentClass(name, options.toList())
+        _documentClass = DocumentClass(name, options.toList())
     }
 
     fun usepackage(name: String, vararg options : String) {
@@ -181,7 +179,5 @@ class DocumentClass(name : String, options : List<String>) : LineCommand("docume
 class UsePackage(name : String, options : List<String>): LineCommand("usepackage", options, listOf(name))
 
 fun document(init: Document.() -> Unit) : Document {
-    val document = Document()
-    document.init()
-    return document
+    return Document().apply(init)
 }
